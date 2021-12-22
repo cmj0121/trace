@@ -70,6 +70,20 @@ func Example() {
 	// example - "tracer"
 }
 
+func ExampleLevel() {
+	tracer := New().Level(INFO).Writer(os.Stdout)
+
+	tracer.Errorf("example - error")
+	tracer.Infof("example - info")
+	tracer.Warnf("example - warn")
+	tracer.Debugf("example - debug")
+	tracer.Tracef("example - trace")
+	// Output:
+	// example - error
+	// example - info
+	// example - warn
+}
+
 func BenchmarkLogf(b *testing.B) {
 	mock_writer := MockWriter{}
 

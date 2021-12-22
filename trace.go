@@ -28,6 +28,10 @@ var (
 type Tracer struct {
 	// the destination writer of the logger
 	w io.Writer
+
+	// the log level of the tracer
+	level Level
+
 	// name of the logger
 	name string
 }
@@ -37,6 +41,8 @@ func New() *Tracer {
 	return &Tracer{
 		// set STDERR as the defualt writer
 		w: os.Stderr,
+		// set ERROR as the defualt level
+		level: ERROR,
 	}
 }
 
@@ -62,9 +68,55 @@ func (tracer *Tracer) Writer(w io.Writer) *Tracer {
 	return tracer
 }
 
-// show the message to io.Writer
+// change the log level
+func (tracer *Tracer) Level(level Level) *Tracer {
+	tracer.level = level
+	return tracer
+}
+
+// show the message to io.Writer without check the log level
 func (tracer *Tracer) Logf(msg string, args ...interface{}) (n int, err error) {
 	buff := fmt.Sprintf(msg, args...) + "\n"
 	n, err = tracer.w.Write([]byte(buff))
 	return
+}
+
+// show the error message with Level=ERROR
+func (tracer *Tracer) Errorf(msg string, args ...interface{}) {
+	if tracer.level >= ERROR {
+		// show the log
+		tracer.Logf(msg, args...) //nolint
+	}
+}
+
+// show the error message with Level=WARN
+func (tracer *Tracer) Warnf(msg string, args ...interface{}) {
+	if tracer.level >= WARN {
+		// show the log
+		tracer.Logf(msg, args...) //nolint
+	}
+}
+
+// show the error message with Level=INFO
+func (tracer *Tracer) Infof(msg string, args ...interface{}) {
+	if tracer.level >= INFO {
+		// show the log
+		tracer.Logf(msg, args...) //nolint
+	}
+}
+
+// show the error message with Level=DEBUG
+func (tracer *Tracer) Debugf(msg string, args ...interface{}) {
+	if tracer.level >= DEBUG {
+		// show the log
+		tracer.Logf(msg, args...) //nolint
+	}
+}
+
+// show the error message with Level=TRACE
+func (tracer *Tracer) Tracef(msg string, args ...interface{}) {
+	if tracer.level >= TRACE {
+		// show the log
+		tracer.Logf(msg, args...) //nolint
+	}
 }
