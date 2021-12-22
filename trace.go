@@ -7,10 +7,10 @@ import (
 	"sync"
 )
 
-type Level uint
+type logLevel uint
 
 const (
-	ERROR Level = iota
+	ERROR logLevel = iota
 	WARN
 	INFO
 	DEBUG
@@ -30,7 +30,7 @@ type Tracer struct {
 	w io.Writer
 
 	// the log level of the tracer
-	level Level
+	level logLevel
 
 	// name of the logger
 	name string
@@ -69,7 +69,7 @@ func (tracer *Tracer) Writer(w io.Writer) *Tracer {
 }
 
 // change the log level
-func (tracer *Tracer) Level(level Level) *Tracer {
+func (tracer *Tracer) Level(level logLevel) *Tracer {
 	tracer.level = level
 	return tracer
 }
@@ -81,7 +81,7 @@ func (tracer *Tracer) Logf(msg string, args ...interface{}) (n int, err error) {
 	return
 }
 
-// show the error message with Level=ERROR
+// show the error message with logLevel=ERROR
 func (tracer *Tracer) Errorf(msg string, args ...interface{}) {
 	if tracer.level >= ERROR {
 		// show the log
@@ -89,7 +89,7 @@ func (tracer *Tracer) Errorf(msg string, args ...interface{}) {
 	}
 }
 
-// show the error message with Level=WARN
+// show the error message with logLevel=WARN
 func (tracer *Tracer) Warnf(msg string, args ...interface{}) {
 	if tracer.level >= WARN {
 		// show the log
@@ -97,7 +97,7 @@ func (tracer *Tracer) Warnf(msg string, args ...interface{}) {
 	}
 }
 
-// show the error message with Level=INFO
+// show the error message with logLevel=INFO
 func (tracer *Tracer) Infof(msg string, args ...interface{}) {
 	if tracer.level >= INFO {
 		// show the log
@@ -105,7 +105,7 @@ func (tracer *Tracer) Infof(msg string, args ...interface{}) {
 	}
 }
 
-// show the error message with Level=DEBUG
+// show the error message with logLevel=DEBUG
 func (tracer *Tracer) Debugf(msg string, args ...interface{}) {
 	if tracer.level >= DEBUG {
 		// show the log
@@ -113,7 +113,7 @@ func (tracer *Tracer) Debugf(msg string, args ...interface{}) {
 	}
 }
 
-// show the error message with Level=TRACE
+// show the error message with logLevel=TRACE
 func (tracer *Tracer) Tracef(msg string, args ...interface{}) {
 	if tracer.level >= TRACE {
 		// show the log
