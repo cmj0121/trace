@@ -39,6 +39,22 @@ func TestLogf(t *testing.T) {
 	}
 }
 
+func TestNamedTracer(t *testing.T) {
+	tracer_foo := GetTracer("foo")
+	tracer_dup := GetTracer("foo")
+	tracer_bob := GetTracer("bob")
+
+	if tracer_foo != tracer_dup {
+		// get the diff tracer
+		t.Errorf("expect get the same named tracer: %v %v", tracer_foo, tracer_dup)
+	}
+
+	if tracer_foo == tracer_bob {
+		// get the same tracer
+		t.Errorf("expect get the diff named tracer: %v %v", tracer_foo, tracer_bob)
+	}
+}
+
 func Example() {
 	tracer := New()
 
