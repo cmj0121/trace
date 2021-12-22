@@ -37,7 +37,6 @@ func TestLogf(t *testing.T) {
 		// check the log message, with extra newline
 		t.Errorf("expect write log %#v + '\n': %#v", msg, buff.String())
 	}
-
 }
 
 func Example() {
