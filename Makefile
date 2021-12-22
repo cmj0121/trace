@@ -10,7 +10,7 @@ clean:			# clean-up environment
 
 build:			# build the binary/library
 	gofmt -w -s $(SRC)
-	go test -cover -failfast -timeout 2s ./...
+	go test -bench=. -cover -failfast -timeout 2s ./...
 
 upgrade:		# upgrade all the necessary packages
 	pre-commit autoupdate
