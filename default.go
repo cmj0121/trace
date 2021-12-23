@@ -2,6 +2,7 @@ package trace
 
 import (
 	"io"
+	"text/template"
 )
 
 var (
@@ -9,6 +10,11 @@ var (
 	// the default tracer
 	default_tracer = GetTracer(DEFAULT_NAME)
 )
+
+func init() {
+	// change the skip stacks to 5 for wrapper
+	default_tracer.skip_stacks = 5
+}
 
 // change the default tracer's writer
 func Writer(w io.Writer) {
@@ -18,6 +24,11 @@ func Writer(w io.Writer) {
 // change the default tracer's log level
 func Level(level logLevel) {
 	default_tracer.Level(level) //nolint
+}
+
+// the template of the log message
+func Template(tmpl *template.Template) {
+	default_tracer.Template(tmpl) //nolint
 }
 
 // show the message to io.Writer without check the log level

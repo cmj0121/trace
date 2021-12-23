@@ -37,6 +37,9 @@ type Tracer struct {
 
 	// the template of the logger
 	tmpl *template.Template
+
+	// skip stacks of caller
+	skip_stacks int
 }
 
 // create tracer with default settings
@@ -46,6 +49,8 @@ func New() *Tracer {
 		w: os.Stderr,
 		// set ERROR as the defualt level
 		level: ERROR,
+		// skip stacks of caller
+		skip_stacks: 4,
 	}
 }
 

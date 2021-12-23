@@ -84,15 +84,28 @@ func ExampleTemplate() {
 	tmpl := template.Must(template.New("tmpl").Parse("{{ .File }}#L{{ .Line }} - {{ .Msg }}"))
 	tracer := New().Writer(os.Stdout).Template(tmpl).Level(INFO)
 
+	tmpl_2 := template.Must(template.New("tmpl").Parse("[{{ .File }}#L{{ .Line }}] - {{ .Msg }}"))
+	Writer(os.Stdout)
+	Template(tmpl_2)
+	Level(INFO)
+
 	tracer.Errorf("example - error")
 	tracer.Warnf("example - warn")
 	tracer.Infof("example - info")
 	tracer.Debugf("example - debug")
 	tracer.Tracef("example - trace")
+	Errorf("default - error")
+	Warnf("default - warn")
+	Infof("default - info")
+	Debugf("default - debug")
+	Tracef("default - trace")
 	// Output:
-	// trace_test.go#L87 - example - error
-	// trace_test.go#L88 - example - warn
-	// trace_test.go#L89 - example - info
+	// trace_test.go#L92 - example - error
+	// trace_test.go#L93 - example - warn
+	// trace_test.go#L94 - example - info
+	// [trace_test.go#L97] - default - error
+	// [trace_test.go#L98] - default - warn
+	// [trace_test.go#L99] - default - info
 }
 
 func BenchmarkLogf(b *testing.B) {
