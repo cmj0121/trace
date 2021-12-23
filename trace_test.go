@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os"
 	"testing"
+	"text/template"
 )
 
 type MockWriter struct {
@@ -21,16 +22,11 @@ func TestLogf(t *testing.T) {
 	tracer.Writer(&buff)
 
 	msg := "This is the test example message"
-	nbytes, err := tracer.Logf(msg)
+	err := tracer.Logf(msg)
 
 	if err != nil {
 		// write log fail
 		t.Fatalf("cannot write log: %v", err)
-	}
-
-	if nbytes != len(msg)+1 {
-		// check number of bytes write
-		t.Errorf("expect write %d+1 bytes: %d", len(msg), nbytes)
 	}
 
 	if buff.String() != msg+"\n" {
@@ -74,14 +70,29 @@ func ExampleLevel() {
 	tracer := New().Level(INFO).Writer(os.Stdout)
 
 	tracer.Errorf("example - error")
-	tracer.Infof("example - info")
 	tracer.Warnf("example - warn")
+	tracer.Infof("example - info")
 	tracer.Debugf("example - debug")
 	tracer.Tracef("example - trace")
 	// Output:
 	// example - error
-	// example - info
 	// example - warn
+	// example - info
+}
+
+func ExampleTemplate() {
+	tmpl := template.Must(template.New("tmpl").Parse("{{ .File }}#L{{ .Line }} - {{ .Msg }}"))
+	tracer := New().Writer(os.Stdout).Template(tmpl).Level(INFO)
+
+	tracer.Errorf("example - error")
+	tracer.Warnf("example - warn")
+	tracer.Infof("example - info")
+	tracer.Debugf("example - debug")
+	tracer.Tracef("example - trace")
+	// Output:
+	// trace_test.go#L87 - example - error
+	// trace_test.go#L88 - example - warn
+	// trace_test.go#L89 - example - info
 }
 
 func BenchmarkLogf(b *testing.B) {

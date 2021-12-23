@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"runtime"
+	"time"
 )
 
 // the caller context
@@ -12,6 +13,12 @@ type Context struct {
 	File string
 	Func string
 	Line int
+
+	// the timestamp
+	Now time.Time
+
+	// the raw message
+	Msg string
 }
 
 // get the caller context

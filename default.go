@@ -21,8 +21,8 @@ func Level(level logLevel) {
 }
 
 // show the message to io.Writer without check the log level
-func Logf(msg string, args ...interface{}) (n int, err error) {
-	n, err = default_tracer.Logf(msg, args...)
+func Logf(msg string, args ...interface{}) (err error) {
+	err = default_tracer.Logf(msg, args...)
 	return
 }
 

@@ -5,6 +5,8 @@ import (
 	"io"
 	"os"
 	"sync"
+	"text/template"
+	"time"
 )
 
 type logLevel uint
@@ -34,6 +36,9 @@ type Tracer struct {
 
 	// name of the logger
 	name string
+
+	// the template of the logger
+	tmpl *template.Template
 }
 
 // create tracer with default settings
@@ -74,10 +79,30 @@ func (tracer *Tracer) Level(level logLevel) *Tracer {
 	return tracer
 }
 
+// the template of the log message
+func (tracer *Tracer) Template(tmpl *template.Template) *Tracer {
+	tracer.tmpl = tmpl
+	return tracer
+}
+
 // show the message to io.Writer without check the log level
-func (tracer *Tracer) Logf(msg string, args ...interface{}) (n int, err error) {
-	buff := fmt.Sprintf(msg, args...) + "\n"
-	n, err = tracer.w.Write([]byte(buff))
+func (tracer *Tracer) Logf(msg string, args ...interface{}) (err error) {
+	buff := fmt.Sprintf(msg, args...)
+	switch tracer.tmpl {
+	case nil:
+		_, err = tracer.w.Write([]byte(buff))
+	default:
+		ctx := CallerContext(4)
+
+		ctx.Msg = buff
+		ctx.Now = time.Now()
+		err = tracer.tmpl.Execute(tracer.w, ctx)
+	}
+
+	if err == nil {
+		// add newline
+		tracer.w.Write([]byte{'\n'}) //nolint
+	}
 	return
 }
 

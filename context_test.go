@@ -1,11 +1,13 @@
 package trace
 
 import (
+	"fmt"
 	"testing"
 )
 
 func TestContext(t *testing.T) {
 	ctx := CallerContext(1)
+	line := 28
 
 	if ctx == nil {
 		t.Fatalf("cannot get caller context")
@@ -21,13 +23,13 @@ func TestContext(t *testing.T) {
 		t.Errorf("expect get context.Func = github.com/cmj0121/trace.CallerContext: %v", ctx.Func)
 	}
 
-	if ctx.Line != 21 {
+	if ctx.Line != 28 {
 		// should be the 20
-		t.Errorf("expect get context.Line = 21: %v", ctx.Line)
+		t.Errorf("expect get context.Line = %d: %v", line, ctx.Line)
 	}
 
-	if ctx.String() != "context.go#L021" {
+	if ctx.String() != fmt.Sprintf("context.go#L%03d", line) {
 		// should be context.go#L021
-		t.Errorf("expect get context = context.go#L20: %v", ctx.String())
+		t.Errorf("expect get context = context.go#L%03d: %v", line, ctx.String())
 	}
 }
