@@ -1,12 +1,10 @@
 package trace
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"sync"
 	"text/template"
-	"time"
 )
 
 type logLevel uint
@@ -65,83 +63,4 @@ func GetTracer(name string) *Tracer {
 	tracer.name = name
 	named_tracer[name] = tracer
 	return tracer
-}
-
-// override the writer
-func (tracer *Tracer) Writer(w io.Writer) *Tracer {
-	tracer.w = w
-	return tracer
-}
-
-// change the log level
-func (tracer *Tracer) Level(level logLevel) *Tracer {
-	tracer.level = level
-	return tracer
-}
-
-// the template of the log message
-func (tracer *Tracer) Template(tmpl *template.Template) *Tracer {
-	tracer.tmpl = tmpl
-	return tracer
-}
-
-// show the message to io.Writer without check the log level
-func (tracer *Tracer) Logf(msg string, args ...interface{}) (err error) {
-	buff := fmt.Sprintf(msg, args...)
-	switch tracer.tmpl {
-	case nil:
-		_, err = tracer.w.Write([]byte(buff))
-	default:
-		ctx := CallerContext(4)
-
-		ctx.Msg = buff
-		ctx.Now = time.Now()
-		err = tracer.tmpl.Execute(tracer.w, ctx)
-	}
-
-	if err == nil {
-		// add newline
-		tracer.w.Write([]byte{'\n'}) //nolint
-	}
-	return
-}
-
-// show the error message with logLevel=ERROR
-func (tracer *Tracer) Errorf(msg string, args ...interface{}) {
-	if tracer.level >= ERROR {
-		// show the log
-		tracer.Logf(msg, args...) //nolint
-	}
-}
-
-// show the error message with logLevel=WARN
-func (tracer *Tracer) Warnf(msg string, args ...interface{}) {
-	if tracer.level >= WARN {
-		// show the log
-		tracer.Logf(msg, args...) //nolint
-	}
-}
-
-// show the error message with logLevel=INFO
-func (tracer *Tracer) Infof(msg string, args ...interface{}) {
-	if tracer.level >= INFO {
-		// show the log
-		tracer.Logf(msg, args...) //nolint
-	}
-}
-
-// show the error message with logLevel=DEBUG
-func (tracer *Tracer) Debugf(msg string, args ...interface{}) {
-	if tracer.level >= DEBUG {
-		// show the log
-		tracer.Logf(msg, args...) //nolint
-	}
-}
-
-// show the error message with logLevel=TRACE
-func (tracer *Tracer) Tracef(msg string, args ...interface{}) {
-	if tracer.level >= TRACE {
-		// show the log
-		tracer.Logf(msg, args...) //nolint
-	}
 }
