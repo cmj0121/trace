@@ -7,6 +7,7 @@ import (
 func ExampleDefaultTracer() { //nolint
 	Level(INFO)
 	Writer(os.Stdout)
+	Template(nil)
 
 	Errorf("example - error")
 	Infof("example - info")

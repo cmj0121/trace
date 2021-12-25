@@ -19,7 +19,7 @@ func TestLogf(t *testing.T) {
 	var buff bytes.Buffer
 
 	tracer := New()
-	tracer.Writer(&buff)
+	tracer.Writer(&buff).Template(nil)
 
 	msg := "This is the test example message"
 	err := tracer.Logf(msg)
@@ -52,7 +52,7 @@ func TestNamedTracer(t *testing.T) {
 }
 
 func Example() {
-	tracer := New()
+	tracer := New().Template(nil)
 
 	name := "tracer"
 
@@ -67,7 +67,7 @@ func Example() {
 }
 
 func ExampleLevel() {
-	tracer := New().Level(INFO).Writer(os.Stdout)
+	tracer := New().Level(INFO).Writer(os.Stdout).Template(nil)
 
 	tracer.Errorf("example - error")
 	tracer.Warnf("example - warn")

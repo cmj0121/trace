@@ -43,3 +43,9 @@ func (ctx Context) String() (str string) {
 	str = fmt.Sprintf("%v#L%03d", ctx.File, ctx.Line)
 	return
 }
+
+// show the timestamp as RFC 3339 format
+func (ctx Context) RFC3339() (str string) {
+	str = ctx.Now.Format(time.RFC3339)
+	return
+}

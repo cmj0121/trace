@@ -24,6 +24,14 @@ var (
 	tracer_lock = sync.Mutex{}
 )
 
+// any kind of pre-defined log template
+var (
+	// only show the raw message
+	TMPL_RAW_MESSAGE = template.Must(template.New("tmpl-raw").Parse("{{ .Msg }}"))
+	// show the message with timestamp and caller info
+	TMPL_DEFAULT = template.Must(template.New("tmpl").Parse("[{{ .RFC3339 }}] {{ .File }}#L{{ .Line }} - {{ .Msg }}"))
+)
+
 // the trace instance
 type Tracer struct {
 	// the destination writer of the logger
@@ -51,6 +59,8 @@ func New() *Tracer {
 		level: ERROR,
 		// skip stacks of caller
 		skip_stacks: 4,
+		// set the defualt template
+		tmpl: TMPL_DEFAULT,
 	}
 }
 
