@@ -1,8 +1,10 @@
 package trace
 
 import (
+	"fmt"
 	"io"
 	"os"
+	"strings"
 	"sync"
 	"text/template"
 )
@@ -16,6 +18,22 @@ const (
 	DEBUG
 	TRACE
 )
+
+func LevelFromStr(str string) logLevel {
+	levels := map[string]logLevel{
+		"ERROR": ERROR,
+		"WARN":  WARN,
+		"INFO":  INFO,
+		"DEBUG": DEBUG,
+		"TRACE": TRACE,
+	}
+
+	if level, ok := levels[str]; ok {
+		return level
+	}
+
+	return ERROR
+}
 
 var (
 	// named of the tracer
@@ -52,7 +70,7 @@ type Tracer struct {
 
 // create tracer with default settings
 func New() *Tracer {
-	return &Tracer{
+	tracer := &Tracer{
 		// set STDERR as the defualt writer
 		w: os.Stderr,
 		// set ERROR as the defualt level
@@ -62,6 +80,9 @@ func New() *Tracer {
 		// set the defualt template
 		tmpl: TMPL_DEFAULT,
 	}
+
+	tracer.prologue()
+	return tracer
 }
 
 // create or get the named tracer
@@ -77,5 +98,13 @@ func GetTracer(name string) *Tracer {
 	tracer := New()
 	tracer.name = name
 	named_tracer[name] = tracer
+
+	tracer.prologue()
 	return tracer
+}
+
+// the necessary setup when call Tracer
+func (tracer *Tracer) prologue() {
+	level := os.Getenv(strings.ToUpper(fmt.Sprintf("%v_LOG_LEVEL", tracer.name)))
+	tracer.level = LevelFromStr(level)
 }
