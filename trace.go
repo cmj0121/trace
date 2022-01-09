@@ -21,14 +21,15 @@ const (
 
 func LevelFromStr(str string) logLevel {
 	levels := map[string]logLevel{
-		"ERROR": ERROR,
-		"WARN":  WARN,
-		"INFO":  INFO,
-		"DEBUG": DEBUG,
-		"TRACE": TRACE,
+		"ERROR":   ERROR,
+		"WARN":    WARN,
+		"WARNING": WARN,
+		"INFO":    INFO,
+		"DEBUG":   DEBUG,
+		"TRACE":   TRACE,
 	}
 
-	if level, ok := levels[str]; ok {
+	if level, ok := levels[strings.ToUpper(str)]; ok {
 		return level
 	}
 
